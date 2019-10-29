@@ -24,6 +24,9 @@ using System.Xml;
 using HtmlAgilityPack;
 using System.Net.Http.Headers;
 using System.Threading;
+//using Microsoft.Win32;
+using Microsoft.Win32;
+
 namespace WebImageSpider {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -224,6 +227,15 @@ namespace WebImageSpider {
                 complete_urls[i] = uris[i].ToString();
             }
         }
+        public void ApplyTaskState(string[] queue_urls, string[] complete_urls) {
+            state_completeurlcnt = complete_urls.Length;
+            state_errorcnt = 0;
+            q.Clear(); set_uri.Clear(); try_cnt.Clear();
+            foreach (var s in queue_urls)
+                q.Enqueue(new Uri(s));
+            foreach (var s in complete_urls)
+                set_uri.Add(new Uri(s));
+        }
     }
     public partial class MainWindow : Window {
         HttpImageBfsSpider spider = new HttpImageBfsSpider();
@@ -244,6 +256,7 @@ namespace WebImageSpider {
             fs_err = new FileStream("./err.txt", FileMode.Create);
             sw_log = new StreamWriter(fs_log);
             sw_err = new StreamWriter(fs_err);
+            SetStateStop();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
@@ -289,13 +302,39 @@ namespace WebImageSpider {
             edit_savepath.IsEnabled = val;
             edit_proxy.IsEnabled = val;
             check_externhost.IsEnabled = val;
+            btn_choosefloder.IsEnabled = val;
+        }
+        private void SetStateRunning() {
+            EnabledAll(false);
+            btn_start.IsEnabled = false;
+            btn_pause.IsEnabled = true;
+            btn_stop.IsEnabled = false;
+            btn_opentask.IsEnabled = false;
+            btn_savetask.IsEnabled = false;
+        }
+        private void SetStatePause() {
+            EnabledAll(true);
+            btn_start.IsEnabled = true;
+            btn_pause.IsEnabled = false;
+            btn_stop.IsEnabled = true;
+            btn_opentask.IsEnabled = false;
+            btn_savetask.IsEnabled = true;
+        }
+        private void SetStateStop() {
+            EnabledAll(true);
+            btn_start.IsEnabled = true;
+            btn_pause.IsEnabled = false;
+            btn_stop.IsEnabled = false;
+            btn_opentask.IsEnabled = true;
+            btn_savetask.IsEnabled = false;
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e) {//stop
+            SetStateStop();
             spider = new HttpImageBfsSpider();
-            text_completecnt.Text = "";
-            text_queuecnt.Text = "";
-            text_errorcnt.Text = "";
+            text_completecnt.Text = "0";
+            text_queuecnt.Text = "0";
+            text_errorcnt.Text = "0";
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e) {//save task
@@ -306,15 +345,65 @@ namespace WebImageSpider {
             string filepath = "./SpiderTask" + id + ".task";
             FileStream fs = new FileStream(filepath, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
-            sw.WriteLine(edit_url);
+            sw.WriteLine(edit_url.Text);
+            sw.WriteLine(edit_savepath.Text);
+            sw.WriteLine(edit_proxy.Text);
+            sw.WriteLine(((int)slider_timeout.Value).ToString());
+            sw.WriteLine(((int)slider_trycnt.Value).ToString());
+            sw.WriteLine(((int)slider_parallecnt.Value).ToString());
+            sw.WriteLine(que_url.Length);
+            sw.WriteLine(com_url.Length);
+
+            foreach (var s in que_url)
+                sw.WriteLine(s);
+            foreach (var s in com_url)
+                sw.WriteLine(s);
+
             sw.Close();
             fs.Close();
             MessageBox.Show(filepath);
         }
 
+        private void Button_Click_7(object sender, RoutedEventArgs e) {//open task
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "任务|*.task";
+            ofd.DefaultExt = "task";
+            bool ret = ofd.ShowDialog(this) ?? false;
+            if (!ret) return;
+            spider = new HttpImageBfsSpider();
+            StreamReader sr = new StreamReader(ofd.FileName);
+            edit_url.Text = sr.ReadLine();
+            edit_savepath.Text = sr.ReadLine();
+            edit_proxy.Text = sr.ReadLine();
+            slider_timeout.Value = int.Parse(sr.ReadLine());
+            slider_trycnt.Value = int.Parse(sr.ReadLine());
+            slider_parallecnt.Value = int.Parse(sr.ReadLine());
+            string[] que_url, com_url;
+            int que_cnt = int.Parse(sr.ReadLine());
+            int com_cnt = int.Parse(sr.ReadLine());
+            text_completecnt.Text = com_cnt.ToString();
+            text_queuecnt.Text = que_cnt.ToString();
+            text_errorcnt.Text = "0";
+            que_url = new string[que_cnt];
+            com_url = new string[com_cnt];
+            for (int i = 0; i < que_cnt; i++)
+                que_url[i] = sr.ReadLine();
+            for (int i = 0; i < com_cnt; i++)
+                com_url[i] = sr.ReadLine();
+            spider.ApplyTaskState(que_url, com_url);
+            sr.Close();
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e) {//chose
+            System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                edit_savepath.Text = fbd.SelectedPath;
+            }
+        }
+
         private void Button_Click_4(object sender, RoutedEventArgs e) {//start
             try {
-                EnabledAll(false);
+                SetStateRunning();
                 spider.StartUri = new Uri(edit_url.Text);
                 spider.SavePath = edit_savepath.Text;
                 spider.TimeOut = int.Parse(text_timeout.Text);
@@ -332,14 +421,22 @@ namespace WebImageSpider {
 
                 spider.Start();
                 timer.Start();
+                Task.Run(() => {
+                    spider.Wait();
+                    this.Dispatcher.Invoke(() => {
+                        Button_Click_3(null, null);
+                        Button_Click_5(null, null);
+                    });
+                });
             } catch (Exception exc) {
                 MessageBox.Show("Exception: " + exc.Message);
                 EnabledAll(true);
             }
         }
         private void Button_Click_3(object sender, RoutedEventArgs e) {//pause
-            spider.Pause();
+            SetStatePause();
             timer.Stop();
+            spider.Pause();
             EnabledAll(true);
         }
     }
