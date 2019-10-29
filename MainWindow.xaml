@@ -37,9 +37,9 @@
         <TextBox x:Name="edit_url" HorizontalAlignment="Left" Height="35" Margin="159,80,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="230"/>
         <TextBox x:Name="edit_savepath" HorizontalAlignment="Left" Height="35" Margin="215,120,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
         <TextBox  x:Name="edit_proxy" Grid.Row="1" HorizontalAlignment="Left" Height="35" Margin="160,270,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="230"/>
-        <Slider x:Name="slider_timeout"  Minimum="1" Maximum="100" HorizontalAlignment="Left" Margin="158,162,0,0" VerticalAlignment="Top" Width="230" Height="21" ValueChanged="Slider_ValueChanged"/>
-        <Slider x:Name="slider_trycnt" Minimum="1" Maximum="10" HorizontalAlignment="Left" Margin="158,199,0,0" VerticalAlignment="Top" Width="230" Height="22" ValueChanged="Slider_ValueChanged_1"/>
-        <Slider x:Name="slider_parallecnt" Minimum="1" Maximum="100" HorizontalAlignment="Left" Margin="158,241,0,0" VerticalAlignment="Top" Width="230" Height="21" ValueChanged="Slider_ValueChanged_2"/>
+        <Slider x:Name="slider_timeout" Foreground="SteelBlue"   Minimum="1" Maximum="100" HorizontalAlignment="Left" Margin="158,162,0,0" VerticalAlignment="Top" Width="230" Height="21" ValueChanged="Slider_ValueChanged"/>
+        <Slider x:Name="slider_trycnt" Foreground="SteelBlue"  Minimum="1" Maximum="10" HorizontalAlignment="Left" Margin="158,199,0,0" VerticalAlignment="Top" Width="230" Height="22" ValueChanged="Slider_ValueChanged_1"/>
+        <Slider x:Name="slider_parallecnt" Foreground="SteelBlue"  Minimum="1" Maximum="100" HorizontalAlignment="Left" Margin="158,241,0,0" VerticalAlignment="Top" Width="230" Height="21" ValueChanged="Slider_ValueChanged_2"/>
         <TextBlock x:Name="text_timeout" HorizontalAlignment="Left" Margin="392,162,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="29"/>
         <TextBlock x:Name="text_trycnt" HorizontalAlignment="Left" Margin="392,199,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="29"/>
         <TextBlock x:Name="text_parallecnt" HorizontalAlignment="Left" Margin="392,241,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="29"/>
@@ -50,11 +50,11 @@
         <TextBlock x:Name="text_completecnt" HorizontalAlignment="Left" Margin="562,101,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="14"/>
         <TextBlock x:Name="text_queuecnt" HorizontalAlignment="Left" Margin="562,126,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="14"/>
         <TextBlock x:Name="text_errorcnt" HorizontalAlignment="Left" Margin="563,155,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="14"/>
-        <Button Content="Start" x:Name="btn_start" HorizontalAlignment="Left" Margin="50,403,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
-        <Button Content="Pause" x:Name="btn_pause" HorizontalAlignment="Left" Margin="160,403,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
-        <Button Content="Stop" x:Name="btn_stop" HorizontalAlignment="Left" Margin="270,403,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
+        <Button Content="Start" Background="DarkGreen" BorderBrush="DarkGreen" x:Name="btn_start" HorizontalAlignment="Left" Margin="50,403,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+        <Button Content="Pause" Background="DarkBlue" BorderBrush="DarkBlue" x:Name="btn_pause" HorizontalAlignment="Left" Margin="160,403,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+        <Button Content="Stop" Background="DarkRed" BorderBrush="DarkRed" x:Name="btn_stop" HorizontalAlignment="Left" Margin="270,403,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
         <Button Content="Save Task" x:Name="btn_savetask" HorizontalAlignment="Left" Margin="380,403,0,0" VerticalAlignment="Top" Width="110" Click="Button_Click_6"/>
         <Button Content="Open Task" x:Name="btn_opentask" HorizontalAlignment="Left" Margin="530,403,0,0" VerticalAlignment="Top" Width="110" Click="Button_Click_7"/>
-        <Button Content="选择" x:Name="btn_choosefloder" HorizontalAlignment="Left" Margin="145,125,0,0" VerticalAlignment="Top" Width="65" Height="25" Click="Button_Click_8"/>
+        <Button Content="选择" Background="SteelBlue" BorderBrush="SteelBlue"  x:Name="btn_choosefloder" HorizontalAlignment="Left" Margin="145,125,0,0" VerticalAlignment="Top" Width="65" Height="25" Click="Button_Click_8"/>
     </Grid>
 </Window>

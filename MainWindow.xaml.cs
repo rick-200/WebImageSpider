@@ -421,16 +421,16 @@ namespace WebImageSpider {
 
                 spider.Start();
                 timer.Start();
-                Task.Run(() => {
-                    spider.Wait();
-                    this.Dispatcher.Invoke(() => {
-                        Button_Click_3(null, null);
-                        Button_Click_5(null, null);
-                    });
-                });
+                //Task.Run(() => {
+                //    spider.Wait();
+                //    this.Dispatcher.Invoke(() => {
+                //        Button_Click_3(null, null);
+                //        Button_Click_5(null, null);
+                //    });
+                //});
             } catch (Exception exc) {
                 MessageBox.Show("Exception: " + exc.Message);
-                EnabledAll(true);
+                SetStateStop();
             }
         }
         private void Button_Click_3(object sender, RoutedEventArgs e) {//pause
