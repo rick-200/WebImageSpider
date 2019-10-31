@@ -81,6 +81,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -156,16 +157,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages\HtmlAgilityPack.1.11.16\lib\Net45\HtmlAgilityPack.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages\MaterialDesignColors.1.2.0\lib\net45\MaterialDesignColors.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages\MaterialDesignThemes.2.6.0\lib\net45\MaterialDesignThemes.Wpf.dll" />
+    <Resource Include="img\3.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

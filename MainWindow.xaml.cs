@@ -12,6 +12,8 @@ using System.Threading;
 using Microsoft.Win32;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Reflection;
+using System.Windows.Controls;
+
 namespace WebImageSpider {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -231,7 +233,6 @@ namespace WebImageSpider {
         StreamWriter sw_log, sw_err;
         System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
             string dllName = args.Name.Contains(",") ? args.Name.Substring(0, args.Name.IndexOf(',')) : args.Name.Replace(".dll", "");
-            //MessageBox.Show(dllName);
             dllName = dllName.Replace(".", "_");
             if (dllName.EndsWith("_resources")) {
                 return null;
@@ -261,8 +262,34 @@ namespace WebImageSpider {
             sw_log = new StreamWriter(fs_log);
             sw_err = new StreamWriter(fs_err);
             SetStateStop();
+            //DependencyProperty.Register("Foreground",typeof(string),typeof())
+            //((Grid)this.Content).Children
+            var p = DependencyProperty.Register("Foreground", typeof(string), typeof(UIElement));
+            foreach (var ch in ((Grid)this.Content).Children) {
+                if (ch is Label) {
+                    ((Label)ch).Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                } else if (ch is TextBox) {
+                    ((TextBox)ch).Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                } else if (ch is TextBlock) {
+                    ((TextBlock)ch).Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                } else if (ch is CheckBox) {
+                    ((CheckBox)ch).Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                }
+            }
+            //for (int i = 0; i < this.VisualChildrenCount; i++) {
+            //    var ch = this.GetVisualChild(i);
+            //    ch.SetValue(DependencyProperty.Register("Foreground", typeof(string), typeof(System.Windows.Media.Visual)), new PropertyMetadata("White"));
+            //}
+
+            //DependencyProperty;
+            //System.Drawing.Bitmap bitmap = Properties.Resources._3_jpg;
+            //Image img = new Image();
+            ////System.Windows.Media.ImageSource=
+            //img.Source = Properties.Resources._3_jpg;
+            //img.Stretch = "Fill";
+            //this.AddChild(new Image(Properties.Resources._3_jpg));
         }
-        
+
 
         private void Button_Click(object sender, RoutedEventArgs e) {
         }
