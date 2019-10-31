@@ -26,6 +26,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 //using Microsoft.Win32;
 using Microsoft.Win32;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace WebImageSpider {
     /// <summary>
@@ -53,6 +54,7 @@ namespace WebImageSpider {
         private SortedList<Uri, int> try_cnt = new SortedList<Uri, int>(new UriComprer());
         Task task;
         public bool ExternHost { get { return ctl_externhost; } set { CtlSetCheck(); ctl_externhost = value; } }
+        public bool IsRunning { get { return flag_running; } }
         public int MaxUrlCount { get { return ctl_maxurlcnt; } set { CtlSetCheck(); ctl_maxurlcnt = value; } }
         public int ParalleCount { get { return ctl_parallelcnt; } set { CtlSetCheck(); ctl_parallelcnt = value; } }
         public Uri StartUri { get { return uri; } set { CtlSetCheck(); uri = value; } }
@@ -177,6 +179,7 @@ namespace WebImageSpider {
                 }
                 failed_url.Clear();
             }
+            flag_running = false;
         }
         private void InitClient() {
             HttpClientHandler hch = new HttpClientHandler();
@@ -247,6 +250,11 @@ namespace WebImageSpider {
             timer.Interval = 1000;
             timer.Elapsed += (object timer_sender, ElapsedEventArgs ee) => {
                 this.Dispatcher.Invoke(() => {
+                    if (!spider.IsRunning) {
+                        timer.Stop();
+                        MessageBox.Show("已完成爬取");
+                        Button_Click_5(null, null);
+                    }
                     text_completecnt.Text = spider.CompleteUrlCount.ToString();
                     text_queuecnt.Text = spider.NowUrlCount.ToString();
                     text_errorcnt.Text = spider.ErrorCount.ToString();
@@ -343,8 +351,9 @@ namespace WebImageSpider {
             int id = 0;
             while (File.Exists("./SpiderTask" + id + ".task")) ++id;
             string filepath = "./SpiderTask" + id + ".task";
-            FileStream fs = new FileStream(filepath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
+            MemoryStream ms = new MemoryStream();
+
+            StreamWriter sw = new StreamWriter(ms);
             sw.WriteLine(edit_url.Text);
             sw.WriteLine(edit_savepath.Text);
             sw.WriteLine(edit_proxy.Text);
@@ -359,8 +368,19 @@ namespace WebImageSpider {
             foreach (var s in com_url)
                 sw.WriteLine(s);
 
-            sw.Close();
+            sw.Flush();
+
+            FileStream fs = new FileStream(filepath, FileMode.Create);
+            ZipOutputStream zos = new ZipOutputStream(fs);
+
+            ZipEntry ze = new ZipEntry("task");
+
+            zos.PutNextEntry(ze);
+            zos.Write(ms.ToArray(), 0, (int)ms.Length);
+            zos.Close();
             fs.Close();
+            sw.Close();
+            ms.Close();
             MessageBox.Show(filepath);
         }
 
@@ -371,7 +391,27 @@ namespace WebImageSpider {
             bool ret = ofd.ShowDialog(this) ?? false;
             if (!ret) return;
             spider = new HttpImageBfsSpider();
-            StreamReader sr = new StreamReader(ofd.FileName);
+
+
+            FileStream fs = new FileStream(ofd.FileName, FileMode.Open);
+            ZipInputStream zis = new ZipInputStream(fs);
+            ZipEntry ze = zis.GetNextEntry();
+
+            MemoryStream ms = new MemoryStream();
+
+            byte[] buff = new byte[1024 * 128];
+
+            while (true) {
+                int readlen = zis.Read(buff, 0, 1024 * 128);
+                if (readlen == 0) break;
+                ms.Write(buff, 0, readlen);
+            }
+            zis.Close();
+            fs.Close();
+
+            ms.Seek(0, SeekOrigin.Begin);
+
+            StreamReader sr = new StreamReader(ms);
             edit_url.Text = sr.ReadLine();
             edit_savepath.Text = sr.ReadLine();
             edit_proxy.Text = sr.ReadLine();
@@ -392,6 +432,7 @@ namespace WebImageSpider {
                 com_url[i] = sr.ReadLine();
             spider.ApplyTaskState(que_url, com_url);
             sr.Close();
+            ms.Close();
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e) {//chose
@@ -421,13 +462,6 @@ namespace WebImageSpider {
 
                 spider.Start();
                 timer.Start();
-                //Task.Run(() => {
-                //    spider.Wait();
-                //    this.Dispatcher.Invoke(() => {
-                //        Button_Click_3(null, null);
-                //        Button_Click_5(null, null);
-                //    });
-                //});
             } catch (Exception exc) {
                 MessageBox.Show("Exception: " + exc.Message);
                 SetStateStop();
@@ -437,7 +471,6 @@ namespace WebImageSpider {
             SetStatePause();
             timer.Stop();
             spider.Pause();
-            EnabledAll(true);
         }
     }
 }
