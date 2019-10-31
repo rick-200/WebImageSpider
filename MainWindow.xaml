@@ -24,7 +24,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="0,0,0,-1">
+    <Grid Margin="0,0,0,0">
         <Rectangle Fill="#3f3f46" HorizontalAlignment="Left" Height="30" Stroke="#3f3f46" VerticalAlignment="Top" Width="695" MouseDown="Rectangle_MouseDown" MouseMove="Rectangle_MouseMove" MouseUp="Rectangle_MouseUp"/>
         <Button Content="×" Background="#00000000" BorderBrush="White" HorizontalAlignment="Left" Margin="645,2,0,0" VerticalAlignment="Top" Width="46" Click="Button_Click_1" Height="25"/>
         <Button Content="—" Background="#00000000" BorderBrush="White" HorizontalAlignment="Left" Margin="595,2,0,0" VerticalAlignment="Top" Width="45" Click="Button_Click_2" Height="25"/>

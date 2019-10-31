@@ -59,5 +59,45 @@ namespace WebImageSpider.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] HtmlAgilityPack {
+            get {
+                object obj = ResourceManager.GetObject("HtmlAgilityPack", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] ICSharpCode_SharpZipLib {
+            get {
+                object obj = ResourceManager.GetObject("ICSharpCode_SharpZipLib", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] MaterialDesignColors {
+            get {
+                object obj = ResourceManager.GetObject("MaterialDesignColors", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] MaterialDesignThemes_Wpf {
+            get {
+                object obj = ResourceManager.GetObject("MaterialDesignThemes_Wpf", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
